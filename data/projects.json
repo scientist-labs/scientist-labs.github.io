@@ -1,0 +1,15 @@
+{
+  "order": ["topical", "lancelot", "clusterkit", "parsekit"],
+  "featured": ["topical", "lancelot"],
+  "hide": ["sandbox-old-repo"],
+  "overrides": {
+    "topical": {
+      "description": "Fast, flexible topic modeling for Ruby—embeddings + clustering.",
+      "tags": ["ruby", "nlp", "embeddings", "clustering"],
+      "image": "https://raw.githubusercontent.com/scientist-labs/topical/main/.assets/cover.png"
+    },
+    "lancelot": {
+      "tags": ["vector-search", "lance", "rrf"]
+    }
+  }
+}

@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Open Source · Scientist.com Labs</title>
+        <meta name="org" content="Scientist.com Labs" />
+        <link rel="preconnect" href="https://api.github.com" />
+        <style>
+            :root {
+                --bg: #0b0c10;
+                --fg: #e5e7eb;
+                --muted: #9ca3af;
+                --card: #111827;
+                --border: #1f2937;
+                --accent: #60a5fa;
+                --chip: #1f2937;
+                --shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+            }
+            @media (prefers-color-scheme: light) {
+                :root {
+                    --bg: #f8fafc;
+                    --fg: #0f172a;
+                    --muted: #475569;
+                    --card: #ffffff;
+                    --border: #e2e8f0;
+                    --chip: #eef2f7;
+                    --shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+                }
+            }
+            * {
+                box-sizing: border-box;
+            }
+            html,
+            body {
+                height: 100%;
+            }
+            body {
+                margin: 0;
+                background: var(--bg);
+                color: var(--fg);
+                font:
+                    16px/1.5 system-ui,
+                    -apple-system,
+                    Segoe UI,
+                    Roboto,
+                    Ubuntu,
+                    "Helvetica Neue",
+                    Arial;
+            }
+            .wrap {
+                max-width: 1100px;
+                margin: 0 auto;
+                padding: 32px;
+            }
+            header {
+                display: flex;
+                gap: 16px;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 24px;
+            }
+            .brand {
+                display: flex;
+                gap: 12px;
+                align-items: center;
+            }
+            .brand .logo {
+                width: 42px;
+                height: 42px;
+                border-radius: 12px;
+                background: linear-gradient(135deg, var(--accent), #34d399);
+            }
+            .brand h1 {
+                margin: 0;
+                font-size: 22px;
+                font-weight: 700;
+            }
+            .controls {
+                display: flex;
+                gap: 10px;
+                flex-wrap: wrap;
+            }
+            input[type="search"],
+            select {
+                background: var(--card);
+                color: var(--fg);
+                border: 1px solid var(--border);
+                border-radius: 10px;
+                padding: 10px 12px;
+            }
+            .grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 16px;
+            }
+            .card {
+                background: var(--card);
+                border: 1px solid var(--border);
+                border-radius: 16px;
+                padding: 16px;
+                box-shadow: var(--shadow);
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                transition: transform 0.06s ease;
+            }
+            .card:hover {
+                transform: translateY(-2px);
+            }
+            .hero {
+                width: 100%;
+                aspect-ratio: 16/9;
+                border-radius: 12px;
+                background: #0f172a;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 600;
+                color: var(--muted);
+                overflow: hidden;
+            }
+            .name {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-weight: 700;
+            }
+            .desc {
+                color: var(--muted);
+                min-height: 42px;
+            }
+            .meta {
+                display: flex;
+                gap: 10px;
+                flex-wrap: wrap;
+                align-items: center;
+                color: var(--muted);
+                font-size: 14px;
+            }
+            .chips {
+                display: flex;
+                gap: 6px;
+                flex-wrap: wrap;
+            }
+            .chip {
+                background: var(--chip);
+                border: 1px solid var(--border);
+                border-radius: 999px;
+                padding: 4px 8px;
+                font-size: 12px;
+            }
+            .footer {
+                display: flex;
+                gap: 10px;
+                justify-content: space-between;
+                align-items: center;
+                margin-top: auto;
+            }
+            .btn {
+                appearance: none;
+                border: 1px solid var(--border);
+                background: transparent;
+                color: var(--fg);
+                padding: 8px 10px;
+                border-radius: 10px;
+                text-decoration: none;
+            }
+            .star {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+            }
+            .section {
+                margin: 26px 0 12px;
+                font-weight: 800;
+            }
+            .hidden {
+                display: none !important;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="wrap">
+            <header>
+                <div class="brand">
+                    <div class="logo"></div>
+                    <h1 id="title">Scientist.com Labs · Open Source</h1>
+                </div>
+                <div class="controls">
+                    <input
+                        id="search"
+                        type="search"
+                        placeholder="Search projects…"
+                    />
+                    <select id="sort">
+                        <option value="custom">Custom order</option>
+                        <option value="stars">Most stars</option>
+                        <option value="updated">Recently updated</option>
+                        <option value="name">Name (A→Z)</option>
+                    </select>
+                </div>
+            </header>
+
+            <h2 class="section hidden" id="featuredHeading">Featured</h2>
+            <div class="grid" id="featured"></div>
+
+            <h2 class="section">All projects</h2>
+            <div class="grid" id="grid"></div>
+        </div>
+
+        <script>
+            (async function () {
+                const org = document
+                    .querySelector('meta[name="org"]')
+                    .content.trim();
+                document.getElementById("title").textContent =
+                    `${org} · Open Source`;
+
+                // Load optional overrides/ordering
+                let config = {
+                    order: [],
+                    featured: [],
+                    overrides: {},
+                    hide: [],
+                    tags: {},
+                };
+                try {
+                    const res = await fetch("data/projects.json", {
+                        cache: "no-store",
+                    });
+                    if (res.ok) config = await res.json();
+                } catch (_) {}
+
+                // Fetch repos
+                const repos = await fetchAll(
+                    `https://api.github.com/orgs/${org}/repos?per_page=100&type=public`,
+                );
+                const visible = repos.filter((r) => {
+                    if (r.private || r.archived) return false;
+                    if (config.hide?.includes(r.name)) return false;
+                    return true;
+                });
+
+                // Merge overrides (title, description, tags, image)
+                const enriched = visible.map((r) => {
+                    const ov = config.overrides?.[r.name] || {};
+                    return {
+                        name: r.name,
+                        html_url: r.html_url,
+                        description: ov.description ?? r.description ?? "",
+                        stars: r.stargazers_count,
+                        updated_at: r.updated_at,
+                        language: r.language,
+                        topics: ov.tags ?? r.topics ?? [],
+                        image: ov.image ?? null,
+                        featured: config.featured?.includes(r.name) || false,
+                    };
+                });
+
+                // Sorting helpers
+                const nameIndex = Object.fromEntries(
+                    (config.order || []).map((n, i) => [n, i]),
+                );
+                const sorters = {
+                    custom: (a, b) =>
+                        Number.isInteger(nameIndex[a.name]) -
+                        Number.isInteger(nameIndex[b.name])
+                            ? Number.isInteger(nameIndex[a.name])
+                                ? -1
+                                : 1
+                            : (nameIndex[a.name] ?? 1e9) -
+                                  (nameIndex[b.name] ?? 1e9) ||
+                              b.stars - a.stars,
+                    stars: (a, b) => b.stars - a.stars,
+                    updated: (a, b) =>
+                        new Date(b.updated_at) - new Date(a.updated_at),
+                    name: (a, b) => a.name.localeCompare(b.name),
+                };
+
+                // Initial render
+                const state = { sort: "custom", q: "" };
+                const $grid = document.getElementById("grid");
+                const $featured = document.getElementById("featured");
+                const $featuredHeading =
+                    document.getElementById("featuredHeading");
+
+                function render() {
+                    const q = state.q.toLowerCase();
+                    const sorter = sorters[state.sort] || sorters.custom;
+
+                    const list = enriched.filter(
+                        (p) =>
+                            !q ||
+                            p.name.toLowerCase().includes(q) ||
+                            p.description.toLowerCase().includes(q) ||
+                            (p.topics || []).some((t) =>
+                                t.toLowerCase().includes(q),
+                            ),
+                    );
+
+                    const featured = list
+                        .filter((p) => p.featured)
+                        .sort(sorter);
+                    const regular = list
+                        .filter((p) => !p.featured)
+                        .sort(sorter);
+
+                    $featured.innerHTML = featured.map(card).join("");
+                    $featuredHeading.classList.toggle(
+                        "hidden",
+                        featured.length === 0,
+                    );
+                    $grid.innerHTML = regular.map(card).join("");
+                }
+
+                function card(p) {
+                    const tags = (p.topics || [])
+                        .slice(0, 6)
+                        .map((t) => `<span class="chip">${escape(t)}</span>`)
+                        .join("");
+                    const hero = p.image
+                        ? `<img class="hero" alt="" src="${escapeAttr(p.image)}" />`
+                        : `<div class="hero">${escape(shortName(p.name))}</div>`;
+                    return `
+      <article class="card">
+        ${hero}
+        <div class="name">${escape(p.name)}</div>
+        <div class="desc">${escape(p.description)}</div>
+        <div class="meta">
+          <span class="star">⭐ ${p.stars}</span>
+          <span>•</span>
+          <span title="${p.updated_at}">Updated ${timeAgo(p.updated_at)}</span>
+        </div>
+        <div class="chips">${tags}</div>
+        <div class="footer">
+          <a class="btn" href="${p.html_url}" target="_blank" rel="noopener">View on GitHub</a>
+        </div>
+      </article>`;
+                }
+
+                // Events
+                document
+                    .getElementById("sort")
+                    .addEventListener("change", (e) => {
+                        state.sort = e.target.value;
+                        render();
+                    });
+                document
+                    .getElementById("search")
+                    .addEventListener("input", (e) => {
+                        state.q = e.target.value;
+                        render();
+                    });
+
+                render();
+
+                // helpers
+                async function fetchAll(url) {
+                    let out = [],
+                        next = url;
+                    while (next) {
+                        const res = await fetch(next, {
+                            headers: { Accept: "application/vnd.github+json" },
+                        });
+                        const page = await res.json();
+                        out = out.concat(page);
+                        next = parseNext(res.headers.get("Link"));
+                    }
+                    // Try to fetch topics for better tags (optional, rate-limit aware)
+                    for (const r of out) {
+                        try {
+                            const t = await fetch(
+                                `https://api.github.com/repos/${org}/${r.name}/topics`,
+                                {
+                                    headers: {
+                                        Accept: "application/vnd.github.mercy-preview+json",
+                                    },
+                                },
+                            );
+                            if (t.ok) {
+                                r.topics = (await t.json()).names || [];
+                            }
+                        } catch (_) {}
+                    }
+                    return out;
+                }
+                function parseNext(link) {
+                    if (!link) return null;
+                    const m = link
+                        .split(",")
+                        .find((s) => s.includes('rel="next"'));
+                    if (!m) return null;
+                    return (m.match(/<([^>]+)>/) || [])[1] || null;
+                }
+                function shortName(n) {
+                    return n.replace(/[-_]/g, " ").slice(0, 28);
+                }
+                function timeAgo(d) {
+                    const s = Math.floor(
+                        (Date.now() - new Date(d).getTime()) / 1000,
+                    );
+                    const u = [
+                        [31536000, "y"],
+                        [2592000, "mo"],
+                        [604800, "w"],
+                        [86400, "d"],
+                        [3600, "h"],
+                        [60, "m"],
+                    ];
+                    for (const [sec, label] of u) {
+                        if (s >= sec) return Math.floor(s / sec) + label;
+                    }
+                    return s + "s";
+                }
+                const esc = document.createElement("div");
+                function escape(str) {
+                    esc.textContent = str ?? "";
+                    return esc.innerHTML;
+                }
+                function escapeAttr(str) {
+                    return String(str ?? "").replace(/"/g, "&quot;");
+                }
+            })();
+        </script>
+    </body>
+</html>
