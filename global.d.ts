@@ -111,6 +111,7 @@ interface Social {
    * LinkedIn
    */
   linkedin?: string;
+  linkedinCompany?: string;
 
   /**
    * X (formerly Twitter)

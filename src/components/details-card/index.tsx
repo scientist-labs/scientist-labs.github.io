@@ -233,6 +233,14 @@ const DetailsCard = ({ profile, loading, social, github }: Props) => {
                   link={`https://www.linkedin.com/in/${social.linkedin}`}
                 />
               )}
+              {social?.linkedinCompany && (
+                <ListItem
+                  icon={<FaLinkedin />}
+                  title="LinkedIn:"
+                  value={social.linkedinCompany}
+                  link={`https://www.linkedin.com/company/${social.linkedinCompany}`}
+                />
+              )}
               {social?.dribbble && (
                 <ListItem
                   icon={<CgDribbble />}

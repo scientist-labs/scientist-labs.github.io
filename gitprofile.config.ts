@@ -53,7 +53,8 @@ const CONFIG = {
   },
   seo: { title: 'Scientist Labs', description: '', imageURL: '' },
   social: {
-    linkedin: 'scientist-com',
+    linkedin: '',
+    linkedinCompany: 'scientist-com',
     x: 'scientist_com',
     mastodon: '',
     researchGate: '',

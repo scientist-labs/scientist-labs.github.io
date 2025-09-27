@@ -37,20 +37,20 @@
 
 **Features:**
 
-✓ [Easy to Setup](#-installation--setup)  
-✓ [37 Themes](#themes)  
-✓ [Google Analytics](#google-analytics)  
-✓ [Hotjar](#hotjar)  
-✓ [SEO](#seo)  
-✓ [PWA](#pwa)  
-✓ [Avatar and Bio](#avatar-and-bio)  
-✓ [Social Links](#social-links)  
-✓ [Skill Section](#skills)  
-✓ [Experience Section](#experience)  
-✓ [Certification Section](#certifications)  
-✓ [Education Section](#education)  
-✓ [Projects Section](#projects)  
-✓ [Publication Section](#publications)  
+✓ [Easy to Setup](#-installation--setup)
+✓ [37 Themes](#themes)
+✓ [Google Analytics](#google-analytics)
+✓ [Hotjar](#hotjar)
+✓ [SEO](#seo)
+✓ [PWA](#pwa)
+✓ [Avatar and Bio](#avatar-and-bio)
+✓ [Social Links](#social-links)
+✓ [Skill Section](#skills)
+✓ [Experience Section](#experience)
+✓ [Certification Section](#certifications)
+✓ [Education Section](#education)
+✓ [Projects Section](#projects)
+✓ [Publication Section](#publications)
 ✓ [Blog Posts Section](#blog-posts)
 
 To view a live example, **[click here](https://arifszn.github.io/gitprofile)**.
@@ -200,6 +200,7 @@ const CONFIG = {
   seo: { title: 'Portfolio of Ariful Alam', description: '', imageURL: '' },
   social: {
     linkedin: 'ariful-alam',
+    linkedinCompany: 'scientist-com',
     x: 'arif_szn',
     mastodon: 'arifszn@mastodon.social',
     researchGate: '',
@@ -365,7 +366,7 @@ const CONFIG = {
   },
 
   // Optional Footer. Supports plain text or HTML.
-  footer: `Made with <a 
+  footer: `Made with <a
       class="text-primary" href="https://github.com/arifszn/gitprofile"
       target="_blank"
       rel="noreferrer"
@@ -475,6 +476,7 @@ const CONFIG = {
   // ...
   social: {
     linkedin: 'ariful-alam',
+    linkedinCompany: 'scientist-com',
     x: 'arif_szn',
     mastodon: 'arifszn@mastodon.social',
     researchGate: '',
