@@ -15,6 +15,7 @@ export default defineConfig({
           metaTitle: CONFIG.seo.title,
           metaDescription: CONFIG.seo.description,
           metaImageURL: CONFIG.seo.imageURL,
+          buildVersion: Date.now().toString(),
           googleAnalyticsScript: CONFIG.googleAnalytics.id
             ? `<!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=${CONFIG.googleAnalytics.id}"></script>
